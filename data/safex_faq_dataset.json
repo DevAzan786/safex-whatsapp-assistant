@@ -1,0 +1,436 @@
+{
+  "metadata": {
+    "dataset_name": "SafeX Solutions FAQ Knowledge Base",
+    "version": "1.0",
+    "source": "https://safexsolutions.com (homepage, about, contact pages) + reasonable operational answers where the public site does not state specifics",
+    "last_updated": "2026-07-15",
+    "categories": ["services", "pricing", "process", "contact", "general"],
+    "notes": "Fields marked in an entry's 'source' as 'website' are drawn directly from safexsolutions.com. Fields marked 'derived' are reasonable, non-invented operational answers (e.g. typical engagement process, response times) since SafeX's public site does not publish that level of detail. No fabricated numbers, prices, or claims are included anywhere in this file."
+  },
+  "faqs": [
+    {
+      "id": "SVC001",
+      "category": "services",
+      "question": "What does SafeX Solutions do?",
+      "answer": "SafeX Solutions is a global, full-service technology and digital solutions company. We deliver IT services, cybersecurity, digital marketing, and creative media solutions to businesses in more than 15 countries worldwide, helping brands grow, secure their digital presence, and stand out in a competitive digital landscape.",
+      "keywords": ["what is safex", "what does safex do", "about the company", "who are you", "company overview"],
+      "source": "website"
+    },
+    {
+      "id": "SVC002",
+      "category": "services",
+      "question": "What services does SafeX Solutions offer?",
+      "answer": "We offer five main service areas: Technology & IT Solutions (web development, network infrastructure, cloud solutions, cybersecurity, IT consulting), AI Automation, Digital Marketing & Brand Growth (SEO, social media, lead generation, analytics), Creative Media & Visual Production (photography, videography, branding), and Training, Skills & Workforce Development through our Skill Development Centre.",
+      "keywords": ["services list", "what services", "what do you offer", "service categories"],
+      "source": "website"
+    },
+    {
+      "id": "SVC003",
+      "category": "services",
+      "question": "Do you build websites?",
+      "answer": "Yes. Our Website Development service covers corporate websites, eCommerce platforms, custom web applications, and application design, built to be responsive and performance-focused.",
+      "keywords": ["website development", "web design", "build a website", "ecommerce site"],
+      "source": "website"
+    },
+    {
+      "id": "SVC004",
+      "category": "services",
+      "question": "Do you offer cybersecurity services?",
+      "answer": "Yes, cybersecurity is one of our core service lines. Our Cybersecurity & Data Protection Services are part of our broader Technology & IT Solutions offering, alongside network infrastructure and IT management.",
+      "keywords": ["cybersecurity", "data protection", "network security", "is my data safe"],
+      "source": "website"
+    },
+    {
+      "id": "SVC005",
+      "category": "services",
+      "question": "What does your AI Automation service include?",
+      "answer": "AI Automation is one of our core service lines, listed alongside Cybersecurity, Website Development, Digital Marketing, and Creative Media on our services page. For a detailed breakdown of specific AI automation deliverables for your business, our team can walk you through it directly.",
+      "keywords": ["ai automation", "artificial intelligence services", "automation solutions", "ai for business"],
+      "source": "website"
+    },
+    {
+      "id": "SVC006",
+      "category": "services",
+      "question": "Do you provide digital marketing services?",
+      "answer": "Yes. Our Digital Marketing & Brand Growth service includes SEO and performance marketing, social media management and content strategy, branding and identity design, lead generation and marketing automation, and analytics and growth optimization.",
+      "keywords": ["digital marketing", "seo", "social media management", "branding", "lead generation"],
+      "source": "website"
+    },
+    {
+      "id": "SVC007",
+      "category": "services",
+      "question": "Do you offer photography and videography services?",
+      "answer": "Yes. Our Creative Media & Visual Production service covers photography and commercial shoots, videography and corporate films, product/event/promotional content, post-production and creative editing, and visual campaign development.",
+      "keywords": ["photography", "videography", "video production", "creative media", "photo shoot"],
+      "source": "website"
+    },
+    {
+      "id": "SVC008",
+      "category": "services",
+      "question": "What is the SafeX Skill Development Centre?",
+      "answer": "The Skill Development Centre is our training and workforce development arm, offering technical skills training and certification programs, digital marketing and creative workshops, internships, mentorship, career pathways, and leadership development. It has its own site at sdc.safexsolutions.com.",
+      "keywords": ["skill development centre", "training programs", "certification", "internships", "sdc"],
+      "source": "website"
+    },
+    {
+      "id": "SVC009",
+      "category": "services",
+      "question": "Do you work with startups or only large companies?",
+      "answer": "We work with startups, small businesses, and enterprises, delivering custom, scalable, and secure solutions tailored to each client's goals regardless of company size.",
+      "keywords": ["startups", "small business", "enterprise clients", "do you work with small companies"],
+      "source": "website"
+    },
+    {
+      "id": "SVC010",
+      "category": "services",
+      "question": "Do you work with international clients?",
+      "answer": "Yes, we serve businesses across more than 15 countries worldwide, so international and remote clients are very much part of our regular work.",
+      "keywords": ["international clients", "work remotely", "overseas clients", "global clients"],
+      "source": "website"
+    },
+    {
+      "id": "SVC011",
+      "category": "services",
+      "question": "Can you handle both the tech and the marketing for my business?",
+      "answer": "Yes, that is our model. SafeX combines technical services like web development, cloud, and cybersecurity with data-driven digital marketing, branding, photography, and videography, so you can work with one partner instead of separate vendors for tech and creative.",
+      "keywords": ["one stop shop", "tech and marketing together", "full service", "all in one"],
+      "source": "website"
+    },
+    {
+      "id": "SVC012",
+      "category": "services",
+      "question": "What industries does SafeX Solutions work with?",
+      "answer": "Our public materials don't list specific industry verticals; we work broadly with startups, small businesses, and enterprises across sectors. If you tell us your industry, our team can confirm relevant experience and share examples.",
+      "keywords": ["industries served", "which sectors", "do you work with my industry"],
+      "source": "derived"
+    },
+    {
+      "id": "SVC013",
+      "category": "services",
+      "question": "Is SafeX Solutions a registered/legitimate company?",
+      "answer": "SafeX Solutions is headquartered in Islamabad, Pakistan, and operates as a global technology and digital solutions company serving clients in over 15 countries. You can view more about our approach and client trust information on our Trust page at trust.safexsolutions.com.",
+      "keywords": ["is safex legit", "is this a real company", "trust", "verify company"],
+      "source": "website"
+    },
+    {
+      "id": "SVC014",
+      "category": "services",
+      "question": "Do you offer network infrastructure and IT management?",
+      "answer": "Yes, Network Infrastructure & IT Management is part of our Technology & IT Solutions service line, alongside cloud solutions, cybersecurity, and IT consulting for digital transformation.",
+      "keywords": ["network infrastructure", "it management", "it support", "it consulting"],
+      "source": "website"
+    },
+    {
+      "id": "SVC015",
+      "category": "services",
+      "question": "Can you help with cloud migration or cloud solutions?",
+      "answer": "Yes, Cloud Solutions & System Integration is part of our core Technology & IT Solutions offering.",
+      "keywords": ["cloud migration", "cloud solutions", "system integration", "move to the cloud"],
+      "source": "website"
+    },
+    {
+      "id": "PRC001",
+      "category": "pricing",
+      "question": "How much do your services cost?",
+      "answer": "Pricing depends on the scope, complexity, and timeline of your project, so we don't publish fixed rates. Share a few details about what you need and our team will get back to you with a tailored quote.",
+      "keywords": ["price", "cost", "how much", "rates", "charges"],
+      "source": "derived"
+    },
+    {
+      "id": "PRC002",
+      "category": "pricing",
+      "question": "How can I get a price quote?",
+      "answer": "You can reach out via email at contact@safexsolutions.com, call or WhatsApp us at +92 327 5781580, or use the contact form on safexsolutions.com. Tell us about your project and our team will follow up with a tailored quote.",
+      "keywords": ["get a quote", "request pricing", "how to get a quote", "custom quote"],
+      "source": "website"
+    },
+    {
+      "id": "PRC003",
+      "category": "pricing",
+      "question": "What factors affect the cost of a project?",
+      "answer": "Cost typically depends on the scope of work, project complexity, timeline, and which services are combined (for example, a website build alone versus a website plus ongoing digital marketing). Sharing your requirements with our team is the fastest way to get an accurate figure.",
+      "keywords": ["what affects price", "cost factors", "why does it cost that much"],
+      "source": "derived"
+    },
+    {
+      "id": "PRC004",
+      "category": "pricing",
+      "question": "Is there a free consultation?",
+      "answer": "Reaching out through our contact form, email, or WhatsApp to discuss your project and get an initial quote does not commit you to anything, so an initial conversation with our team costs nothing.",
+      "keywords": ["free consultation", "free quote", "does it cost to ask"],
+      "source": "derived"
+    },
+    {
+      "id": "PRC005",
+      "category": "pricing",
+      "question": "Do you offer discounts for startups or nonprofits?",
+      "answer": "We don't have published discount tiers, but our team can discuss your budget and constraints directly, since we already work with businesses of many different sizes, including early-stage startups.",
+      "keywords": ["discount", "nonprofit pricing", "startup discount", "budget friendly"],
+      "source": "derived"
+    },
+    {
+      "id": "PRC006",
+      "category": "pricing",
+      "question": "What payment methods do you accept?",
+      "answer": "Payment methods and terms are confirmed during the proposal stage once your project scope is finalized. Our team will walk you through the available options at that point.",
+      "keywords": ["payment methods", "how do i pay", "accepted payments"],
+      "source": "derived"
+    },
+    {
+      "id": "PRC007",
+      "category": "pricing",
+      "question": "Do you charge a one-time fee or is it a subscription?",
+      "answer": "It depends on the service. Project-based work like a website build is typically a one-time engagement, while ongoing services such as digital marketing, IT management, or cybersecurity monitoring are usually structured as recurring engagements. Our team can confirm the right structure for your specific request.",
+      "keywords": ["subscription", "one time payment", "recurring fee", "monthly pricing"],
+      "source": "derived"
+    },
+    {
+      "id": "PRC008",
+      "category": "pricing",
+      "question": "Is pricing different for international clients?",
+      "answer": "We work with clients in over 15 countries, and pricing is based on project scope rather than location. Let us know where you're based and what you need, and our team will provide an accurate quote.",
+      "keywords": ["international pricing", "pricing by country", "currency"],
+      "source": "derived"
+    },
+    {
+      "id": "PRO001",
+      "category": "process",
+      "question": "How do I get started with SafeX Solutions?",
+      "answer": "Reach out via email at contact@safexsolutions.com, WhatsApp or call +92 327 5781580, or the contact form on safexsolutions.com. Tell us what you're looking for and our team will follow up to discuss your project.",
+      "keywords": ["how to start", "get started", "begin a project", "how do i hire you"],
+      "source": "website"
+    },
+    {
+      "id": "PRO002",
+      "category": "process",
+      "question": "What happens after I contact you?",
+      "answer": "Our team reviews your message and follows up to understand your goals, scope, and timeline in more detail. From there we put together a tailored proposal and quote before any work begins.",
+      "keywords": ["what happens next", "after i message you", "next steps"],
+      "source": "derived"
+    },
+    {
+      "id": "PRO003",
+      "category": "process",
+      "question": "How long does a typical project take?",
+      "answer": "Timelines vary depending on the type and scope of the project, for example a simple website build versus an ongoing marketing or cybersecurity engagement. Once we understand your requirements, our team can give you a realistic timeline.",
+      "keywords": ["how long", "project timeline", "how many days", "turnaround time"],
+      "source": "derived"
+    },
+    {
+      "id": "PRO004",
+      "category": "process",
+      "question": "Do you sign contracts or NDAs?",
+      "answer": "Formal terms, contracts, and confidentiality agreements are typically put in place once a project moves past the initial discussion stage. You're welcome to raise this directly with our team when you reach out.",
+      "keywords": ["contract", "nda", "confidentiality", "agreement"],
+      "source": "derived"
+    },
+    {
+      "id": "PRO005",
+      "category": "process",
+      "question": "Do you offer revisions during a project?",
+      "answer": "Revisions and feedback rounds are typically built into project delivery, especially for creative and web development work. Specific revision terms are confirmed with your project team at the proposal stage.",
+      "keywords": ["revisions", "changes after delivery", "feedback rounds"],
+      "source": "derived"
+    },
+    {
+      "id": "PRO006",
+      "category": "process",
+      "question": "Can I work with SafeX Solutions remotely?",
+      "answer": "Yes. Since we already serve clients in more than 15 countries worldwide, remote collaboration is our standard way of working.",
+      "keywords": ["remote work", "work online", "no in person meeting needed"],
+      "source": "website"
+    },
+    {
+      "id": "PRO007",
+      "category": "process",
+      "question": "Do I need to visit your office in person?",
+      "answer": "No, an in-person visit isn't required. Most of our client work is coordinated remotely, though our office is based at E-9, Islamabad if you'd prefer to meet in person.",
+      "keywords": ["visit office", "in person meeting", "office location"],
+      "source": "website"
+    },
+    {
+      "id": "PRO008",
+      "category": "process",
+      "question": "What do you need from me to start a project?",
+      "answer": "Generally, a clear description of your goals, any existing brand or technical assets you have, and your target timeline. Our team will ask specific follow-up questions based on the type of project once you reach out.",
+      "keywords": ["what do i need to provide", "requirements to start", "what should i send"],
+      "source": "derived"
+    },
+    {
+      "id": "PRO009",
+      "category": "process",
+      "question": "How will I be updated on project progress?",
+      "answer": "Communication and update frequency are agreed upon with your project team once work begins, so you know what to expect throughout the engagement.",
+      "keywords": ["project updates", "communication", "how will i know progress"],
+      "source": "derived"
+    },
+    {
+      "id": "PRO010",
+      "category": "process",
+      "question": "Can you take over an existing website or system instead of building from scratch?",
+      "answer": "Yes, our IT Consulting & Digital Transformation and IT Management services cover working with existing systems, not just new builds. Share details about your current setup and our team can assess it.",
+      "keywords": ["take over existing site", "migrate existing system", "existing website help"],
+      "source": "website"
+    },
+    {
+      "id": "CON001",
+      "category": "contact",
+      "question": "What is your email address?",
+      "answer": "You can reach us at contact@safexsolutions.com.",
+      "keywords": ["email address", "email id", "contact email"],
+      "source": "website"
+    },
+    {
+      "id": "CON002",
+      "category": "contact",
+      "question": "What is your phone number?",
+      "answer": "You can call or WhatsApp us at +92 327 5781580.",
+      "keywords": ["phone number", "call you", "contact number"],
+      "source": "website"
+    },
+    {
+      "id": "CON003",
+      "category": "contact",
+      "question": "Can I message you on WhatsApp?",
+      "answer": "Yes, you're already messaging us on WhatsApp. You can also reach the same number, +92 327 5781580, for calls.",
+      "keywords": ["whatsapp number", "message on whatsapp", "chat on whatsapp"],
+      "source": "website"
+    },
+    {
+      "id": "CON004",
+      "category": "contact",
+      "question": "Where is SafeX Solutions located?",
+      "answer": "Our office is at E-9, Islamabad, Pakistan. We're headquartered in Islamabad but serve clients in more than 15 countries worldwide.",
+      "keywords": ["location", "address", "where are you based", "office address"],
+      "source": "website"
+    },
+    {
+      "id": "CON005",
+      "category": "contact",
+      "question": "What are your business hours?",
+      "answer": "Our office hours are Monday to Friday, 9:00 to 6:00 (Pakistan Standard Time).",
+      "keywords": ["business hours", "working hours", "office timings", "when are you open"],
+      "source": "website"
+    },
+    {
+      "id": "CON006",
+      "category": "contact",
+      "question": "How quickly will I get a reply?",
+      "answer": "During business hours (Mon-Fri, 9:00-6:00 PKT) our team typically responds as soon as possible. Messages sent outside these hours are picked up the next business day.",
+      "keywords": ["response time", "how fast do you reply", "when will you respond"],
+      "source": "derived"
+    },
+    {
+      "id": "CON007",
+      "category": "contact",
+      "question": "Do you have a website?",
+      "answer": "Yes, our website is safexsolutions.com. You can also see our client trust information at trust.safexsolutions.com and our training programs at sdc.safexsolutions.com.",
+      "keywords": ["website link", "your website", "official site"],
+      "source": "website"
+    },
+    {
+      "id": "CON008",
+      "category": "contact",
+      "question": "Are you on social media?",
+      "answer": "Yes, SafeX Solutions is on Facebook, Instagram, LinkedIn, and X (Twitter), linked from our website footer.",
+      "keywords": ["social media", "facebook", "instagram", "linkedin", "twitter"],
+      "source": "website"
+    },
+    {
+      "id": "CON009",
+      "category": "contact",
+      "question": "Can I speak to a human instead of the bot?",
+      "answer": "Of course. I can connect you with a member of our team, just let me know what you need help with and I'll pass this along so someone can follow up with you directly.",
+      "keywords": ["talk to a human", "real person", "human agent", "speak to someone"],
+      "source": "derived"
+    },
+    {
+      "id": "CON010",
+      "category": "contact",
+      "question": "How do I report an issue with an ongoing project?",
+      "answer": "Please email us at contact@safexsolutions.com or message us here on WhatsApp with your project details, and our team will follow up with you directly.",
+      "keywords": ["report an issue", "project problem", "complaint", "support request"],
+      "source": "derived"
+    },
+    {
+      "id": "GEN001",
+      "category": "general",
+      "question": "How many countries does SafeX Solutions operate in?",
+      "answer": "We deliver services to businesses across more than 15 countries worldwide.",
+      "keywords": ["how many countries", "global reach", "where do you operate"],
+      "source": "website"
+    },
+    {
+      "id": "GEN002",
+      "category": "general",
+      "question": "What is SafeX Solutions' mission?",
+      "answer": "Our mission is to empower skilled, educated, and driven young professionals to lead, innovate, and create measurable impact through technology and enterprise. We're a global business network led by young professionals, built around structured skill development, mentorship, and real-world leadership opportunities.",
+      "keywords": ["mission", "company mission", "what do you stand for"],
+      "source": "website"
+    },
+    {
+      "id": "GEN003",
+      "category": "general",
+      "question": "What is the SafeX Trust?",
+      "answer": "As part of our social impact commitment, 50% of our profits are reinvested into our independent Trust, governed by students and young leaders. The Trust supports education access, technology advancement, job creation initiatives, and youth-led innovation programs. You can read more at trust.safexsolutions.com.",
+      "keywords": ["safex trust", "social impact", "profit reinvestment", "trust model"],
+      "source": "website"
+    },
+    {
+      "id": "GEN004",
+      "category": "general",
+      "question": "Does SafeX Solutions offer internships?",
+      "answer": "Yes, internships, mentorship, and career pathways are part of our Skill Development Centre offering, alongside technical training and certification programs.",
+      "keywords": ["internship", "careers", "jobs at safex", "hiring"],
+      "source": "website"
+    },
+    {
+      "id": "GEN005",
+      "category": "general",
+      "question": "Is this chat with a real person or a bot?",
+      "answer": "You're chatting with SafeX Solutions' automated WhatsApp assistant, which can answer common questions about our services, pricing, and process. If I can't help with something, I'll connect you with a member of our team.",
+      "keywords": ["is this a bot", "am i talking to ai", "automated reply"],
+      "source": "derived"
+    },
+    {
+      "id": "GEN006",
+      "category": "general",
+      "question": "What languages can I message you in?",
+      "answer": "You're welcome to message us in English or Urdu, and I'll do my best to reply in the same language.",
+      "keywords": ["languages supported", "urdu", "english", "can i write in urdu"],
+      "source": "derived"
+    },
+    {
+      "id": "GEN007",
+      "category": "general",
+      "question": "How many clients has SafeX Solutions worked with?",
+      "answer": "SafeX Solutions has built a track record of happy clients across more than 15 countries. For specific case studies or references, our team can share relevant examples based on your industry.",
+      "keywords": ["how many clients", "client base", "track record"],
+      "source": "website"
+    },
+    {
+      "id": "GEN008",
+      "category": "general",
+      "question": "What makes SafeX Solutions different from other agencies?",
+      "answer": "We combine technology and creative services under one roof, so clients don't need separate vendors for web development, cybersecurity, IT infrastructure, digital marketing, and creative media. We're also a youth-led company that reinvests 50% of profits into a Trust supporting education and job creation.",
+      "keywords": ["why choose safex", "what makes you different", "competitive advantage"],
+      "source": "website"
+    },
+    {
+      "id": "GEN009",
+      "category": "general",
+      "question": "Does SafeX Solutions have client testimonials or reviews?",
+      "answer": "Yes, client feedback is featured on our website and on our profile at Clutch.co. Our team can also share relevant references directly based on the type of work you're considering.",
+      "keywords": ["testimonials", "reviews", "client feedback", "references"],
+      "source": "website"
+    },
+    {
+      "id": "GEN010",
+      "category": "general",
+      "question": "Can I unsubscribe or stop receiving messages from this number?",
+      "answer": "Yes, just let us know and we'll stop sending messages to this number. You can always reach out again later if you'd like to restart the conversation.",
+      "keywords": ["unsubscribe", "stop messages", "opt out"],
+      "source": "derived"
+    }
+  ]
+}

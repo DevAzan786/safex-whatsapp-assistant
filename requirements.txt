@@ -1,0 +1,25 @@
+# Core
+fastapi
+uvicorn
+
+# Retrieval / RAG
+chromadb
+rank-bm25
+sentence-transformers
+
+# Cache
+redis
+
+# LLM
+google-generativeai
+
+# WhatsApp
+requests
+
+# Utilities
+python-dotenv
+pydantic
+
+# Testing
+pytest
+httpx
