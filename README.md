@@ -5,7 +5,6 @@
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector_DB-FC60A8?style=for-the-badge)](https://www.trychroma.com/)
 [![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
 [![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-1A73E8?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
-[![Railway](https://img.shields.io/badge/Railway-Deploy-131313?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app/)
 
 An advanced, production-grade **FAQ Retrieval Engine** built for **SafeX Solutions' WhatsApp Auto-Reply Bot** (Week 2, Group 10). This module utilizes a hybrid retrieval pipeline combining dense vector embeddings with sparse lexical search, merged via Reciprocal Rank Fusion (RRF), re-ranked by a Cross-Encoder, and protected by a confidence gate to ensure zero-hallucination auto-replies.
 
@@ -193,18 +192,3 @@ Assess the accuracy of the retrieval pipeline against the curated test dataset:
 ```bash
 python scripts/evaluate_retrieval.py
 ```
-
----
-
-## 🌐 Production Deployment
-
-This application is ready for deployment on platforms like **Railway** or **Render**.
-
-### Deployment Checklist (Railway)
-1. Link your GitHub repository to Railway.
-2. Railway will automatically detect the `Procfile` and deploy using Uvicorn.
-3. Add the following **Environment Variables** in the Railway service settings:
-   *   `GEMINI_API_KEY` (Your Google Gemini key)
-   *   `CONFIDENCE_THRESHOLD` (Recommended: `0.70`)
-   *   `REDIS_URL` (Link to a Railway-provided Redis instance)
-   *   `PORT` (Automatically populated by Railway)
