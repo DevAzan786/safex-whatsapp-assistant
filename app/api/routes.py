@@ -1,7 +1,9 @@
 from typing import List
 import os
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
+from app.config import settings
+from app.services.whatsapp_client import send_whatsapp_message
 
 from app.models.schemas import (
     FAQQueryRequest, 
@@ -87,3 +89,51 @@ def get_dashboard():
     with open(template_path, "r", encoding="utf-8") as f:
         html_content = f.read()
     return HTMLResponse(content=html_content)
+
+
+# --- Official WhatsApp Business Webhook Endpoints ---
+
+@router.get("/bot/whatsapp/webhook")
+def verify_whatsapp_webhook(
+    hub_mode: str = Query(None, alias="hub.mode"),
+    hub_challenge: str = Query(None, alias="hub.challenge"),
+    hub_verify_token: str = Query(None, alias="hub.verify_token")
+):
+    """
+    Endpoint for Meta to verify our webhook URL during subscription setup.
+    """
+    if hub_mode == "subscribe" and hub_verify_token == settings.whatsapp_verify_token:
+        # Challenge must be returned as plain text response
+        return HTMLResponse(content=hub_challenge, status_code=200)
+    raise HTTPException(status_code=403, detail="Verification token mismatch")
+
+
+@router.post("/bot/whatsapp/webhook")
+async def receive_whatsapp_message(request: Request):
+    """
+    Endpoint where Meta WhatsApp Cloud API pushes real-time user message events.
+    """
+    try:
+        payload = await request.json()
+        # Extract WhatsApp message details (sender ID & text body)
+        entry = payload.get("entry", [])[0]
+        change = entry.get("changes", [])[0]
+        value = change.get("value", {})
+        message_obj = value.get("messages", [])[0]
+        
+        sender = message_obj.get("from")  # e.g., "923001234567"
+        message_text = message_obj.get("text", {}).get("body", "")
+        
+        if sender and message_text:
+            # Format sender to have a plus sign if it's missing (WhatsApp payload standard is plain digits)
+            formatted_sender = sender if sender.startswith("+") else f"+{sender}"
+            # Orchestrate through router engine
+            result = handle_user_message(formatted_sender, message_text)
+            # Send the response back to user's WhatsApp number
+            send_whatsapp_message(sender, result["reply"])
+            
+    except Exception:
+        # Silently pass events that aren't user text messages (reads, deliveries, statuses)
+        pass
+        
+    return {"status": "success"}
