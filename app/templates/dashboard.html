@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeX Solutions - Bot Analytics & Control Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            900: '#4c1d95',
+                        },
+                        dark: {
+                            900: '#030014',
+                            800: '#0a0526',
+                            700: '#130a3a',
+                            600: '#1c124c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #030014;
+            color: #f5f3ff;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+        .glass {
+            background: rgba(10, 5, 38, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-glow {
+            box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.15);
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030014;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4c1d95;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7c3aed;
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen pb-12">
+    <!-- Navbar -->
+    <header class="w-full py-5 px-6 md:px-12 flex justify-between items-center border-b border-white/5 glass sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                <i class="fa-solid fa-robot text-white text-lg"></i>
+            </div>
+            <div>
+                <span class="font-outfit font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-brand-100 to-brand-500 bg-clip-text text-transparent">SafeX Solutions</span>
+                <span class="block text-[10px] text-brand-500 uppercase tracking-widest font-semibold">Auto-Reply Suite</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="flex h-3 w-3 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <span class="text-sm font-medium text-emerald-400">Live Agent Dashboard</span>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 md:px-12 mt-8">
+        <!-- Hero Section -->
+        <div class="mb-10">
+            <h1 class="font-outfit font-extrabold text-3xl md:text-4xl text-white mb-2">Bot Intelligence Console</h1>
+            <p class="text-white/60 text-sm md:text-base max-w-2xl">
+                Monitor message volume, intent classification accuracy, multi-lingual performance, CRM sync status, and take control of active customer escalations.
+            </p>
+        </div>
+
+        <!-- Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Card 1 -->
+            <div class="glass glass-glow rounded-2xl p-6 relative overflow-hidden transition-all duration-300 hover:translate-y-[-2px] hover:border-white/10">
+                <div class="absolute -right-6 -bottom-6 text-brand-900/20 text-7xl font-bold">
+                    <i class="fa-solid fa-message"></i>
+                </div>
+                <p class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-2">Total Messages</p>
+                <h3 class="text-3xl font-outfit font-bold text-white text-glow mb-1" id="m-total-messages">0</h3>
+                <p class="text-xs text-brand-500"><i class="fa-solid fa-chart-line mr-1"></i> System-wide interactions</p>
+            </div>
+            <!-- Card 2 -->
+            <div class="glass rounded-2xl p-6 relative overflow-hidden transition-all duration-300 hover:translate-y-[-2px] hover:border-white/10">
+                <div class="absolute -right-6 -bottom-6 text-brand-900/20 text-7xl font-bold">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <p class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-2">FAQ Hit Rate</p>
+                <h3 class="text-3xl font-outfit font-bold text-white mb-1" id="m-faq-rate">0%</h3>
+                <div class="w-full bg-white/5 rounded-full h-1.5 mt-2">
+                    <div class="bg-brand-500 h-1.5 rounded-full" id="m-faq-progress" style="width: 0%"></div>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="glass rounded-2xl p-6 relative overflow-hidden transition-all duration-300 hover:translate-y-[-2px] hover:border-white/10">
+                <div class="absolute -right-6 -bottom-6 text-brand-900/20 text-7xl font-bold">
+                    <i class="fa-solid fa-address-book"></i>
+                </div>
+                <p class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-2">Leads Captured (CRM)</p>
+                <h3 class="text-3xl font-outfit font-bold text-white mb-1" id="m-leads">0</h3>
+                <p class="text-xs text-brand-500"><i class="fa-solid fa-database mr-1"></i> Sync & deduplicated</p>
+            </div>
+            <!-- Card 4 -->
+            <div class="glass rounded-2xl p-6 relative overflow-hidden transition-all duration-300 hover:translate-y-[-2px] hover:border-white/10">
+                <div class="absolute -right-6 -bottom-6 text-brand-900/20 text-7xl font-bold">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <p class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-2">Handovers Active</p>
+                <h3 class="text-3xl font-outfit font-bold text-white mb-1" id="m-handovers">0</h3>
+                <p class="text-xs text-amber-500"><i class="fa-solid fa-circle-exclamation mr-1"></i> Escalated to humans</p>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+            <div class="glass rounded-2xl p-6">
+                <h4 class="font-outfit font-bold text-lg text-white mb-4"><i class="fa-solid fa-arrows-split-up-and-left text-brand-500 mr-2"></i>Intent Classification</h4>
+                <div class="h-64 flex justify-center items-center relative">
+                    <canvas id="intentChart" class="max-h-full"></canvas>
+                </div>
+            </div>
+            <div class="glass rounded-2xl p-6">
+                <h4 class="font-outfit font-bold text-lg text-white mb-4"><i class="fa-solid fa-language text-brand-500 mr-2"></i>Language Breakdown</h4>
+                <div class="h-64 flex justify-center items-center relative">
+                    <canvas id="langChart" class="max-h-full"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulator & Handover Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+            <!-- Chat Simulator (Interactive) -->
+            <div class="glass rounded-2xl p-6 lg:col-span-2 flex flex-col h-[520px]">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-outfit font-bold text-lg text-white"><i class="fa-brands fa-whatsapp text-emerald-400 mr-2"></i>WhatsApp Simulator</h4>
+                    <span class="text-xs bg-white/5 py-1 px-3 rounded-full text-white/40 font-mono" id="sim-session">Session: Idle</span>
+                </div>
+                
+                <!-- Chat Window -->
+                <div class="flex-grow overflow-y-auto p-4 bg-black/30 rounded-xl space-y-4 mb-4 border border-white/5" id="chat-messages">
+                    <div class="flex gap-3 max-w-[85%]">
+                        <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-robot text-xs"></i>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-2xl px-4 py-2.5 text-sm text-white/90">
+                            Hello! I am SafeX Solutions support bot. How can I assist you today?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="flex gap-2">
+                    <div class="flex-grow flex gap-2 glass rounded-xl px-3 py-2">
+                        <span class="text-white/30 text-xs shrink-0 flex items-center border-r border-white/10 pr-2">
+                            <i class="fa-solid fa-phone mr-1.5"></i>
+                            <input type="text" id="sim-phone" value="+923001234567" class="bg-transparent outline-none w-28 text-white/80 font-mono text-xs" title="Sender Phone Number">
+                        </span>
+                        <input type="text" id="sim-text" placeholder="Type a message (e.g. 'I want to build website', 'price kya hai?')..." class="bg-transparent outline-none flex-grow text-sm text-white placeholder-white/20">
+                    </div>
+                    <button id="btn-send" class="h-11 w-11 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-95 transition-all text-white flex items-center justify-center shrink-0 shadow-lg shadow-brand-500/25">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Escalations & Handovers Console -->
+            <div class="glass rounded-2xl p-6 flex flex-col h-[520px]">
+                <h4 class="font-outfit font-bold text-lg text-white mb-4"><i class="fa-solid fa-headset text-amber-500 mr-2"></i>Handover Escalations</h4>
+                <div class="flex-grow overflow-y-auto space-y-3 pr-1" id="handover-list">
+                    <!-- Dynamic Handovers -->
+                    <p class="text-white/40 text-center text-xs py-8">No pending escalations.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs & Database Row -->
+        <div class="glass rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="font-outfit font-bold text-lg text-white"><i class="fa-solid fa-list-check text-brand-500 mr-2"></i>Live System logs</h4>
+                <button onclick="fetchData()" class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5 text-white/60 hover:text-white transition-all">
+                    <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Logs
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-white/5 text-white/40 text-xs font-semibold uppercase">
+                            <th class="py-3 px-4">Time</th>
+                            <th class="py-3 px-4">Sender</th>
+                            <th class="py-3 px-4">Message</th>
+                            <th class="py-3 px-4">Intent</th>
+                            <th class="py-3 px-4">Lang</th>
+                            <th class="py-3 px-4">Confidence</th>
+                            <th class="py-3 px-4">Bot Reply</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-white/5" id="logs-tbody">
+                        <!-- Dynamic Logs -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let intentChart = null;
+        let langChart = null;
+
+        // Initialize Charts
+        function initCharts(intentData = {}, langData = {}) {
+            // Intent Chart
+            const intentCtx = document.getElementById('intentChart').getContext('2d');
+            
+            const intentLabels = Object.keys(intentData).map(k => k.toUpperCase().replace('_', ' ')) || [];
+            const intentValues = Object.values(intentData) || [];
+            
+            if (intentChart) intentChart.destroy();
+            
+            intentChart = new Chart(intentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: intentLabels.length ? intentLabels : ['FAQ', 'LEAD CAPTURE', 'HUMAN HANDOVER'],
+                    datasets: [{
+                        data: intentValues.length ? intentValues : [0, 0, 0],
+                        backgroundColor: [
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(245, 158, 11, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(139, 92, 246, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(245, 158, 11, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: 'rgba(255,255,255,0.7)', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                        }
+                    }
+                }
+            });
+
+            // Language Chart
+            const langCtx = document.getElementById('langChart').getContext('2d');
+            
+            const langLabels = Object.keys(langData).map(k => k.toUpperCase()) || [];
+            const langValues = Object.values(langData) || [];
+            
+            if (langChart) langChart.destroy();
+            
+            langChart = new Chart(langCtx, {
+                type: 'bar',
+                data: {
+                    labels: langLabels.length ? langLabels : ['ENGLISH', 'URDU', 'ROMAN URDU'],
+                    datasets: [{
+                        label: 'Messages',
+                        data: langValues.length ? langValues : [0, 0, 0],
+                        backgroundColor: 'rgba(124, 58, 237, 0.5)',
+                        borderColor: 'rgba(124, 58, 237, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'rgba(255,255,255,0.5)', stepSize: 1 },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        },
+                        x: {
+                            ticks: { color: 'rgba(255,255,255,0.5)' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Fetch Dashboard Data
+        async function fetchData() {
+            try {
+                const response = await fetch('/analytics/data');
+                const data = await response.json();
+                
+                // Update metrics
+                document.getElementById('m-total-messages').innerText = data.total_messages;
+                
+                const faqRate = data.total_messages > 0 ? Math.round((data.faq_hits / data.total_messages) * 100) : 0;
+                document.getElementById('m-faq-rate').innerText = faqRate + '%';
+                document.getElementById('m-faq-progress').style.width = faqRate + '%';
+                
+                document.getElementById('m-leads').innerText = data.leads_collected;
+                
+                // Count active handovers from list
+                const handoversRes = await fetch('/handover/pending');
+                const pendingTickets = await handoversRes.json();
+                document.getElementById('m-handovers').innerText = pendingTickets.length;
+                
+                // Update Charts
+                initCharts(data.intent_distribution, data.language_distribution);
+                
+                // Update Handovers List
+                const listEl = document.getElementById('handover-list');
+                if (pendingTickets.length === 0) {
+                    listEl.innerHTML = '<p class="text-white/40 text-center text-xs py-8">No pending escalations.</p>';
+                } else {
+                    listEl.innerHTML = pendingTickets.map(t => `
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-4 transition-all hover:bg-white/[0.08]">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-mono font-bold text-white/90">${t.phone}</span>
+                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 bg-amber-500/10 text-amber-500 rounded border border-amber-500/20">Pending</span>
+                            </div>
+                            <p class="text-xs text-white/60 mb-3"><i class="fa-solid fa-circle-info mr-1"></i> ${t.reason}</p>
+                            <div class="flex gap-2">
+                                <button onclick="claimAndResolve(${t.id})" class="flex-grow text-xs bg-brand-600 hover:bg-brand-700 active:scale-95 transition-all text-white font-medium py-1.5 px-3 rounded-lg shadow shadow-brand-500/25">
+                                    Claim & Resolve
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                // Update Log Table
+                const tbody = document.getElementById('logs-tbody');
+                if (data.recent_messages.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-6 text-white/30 text-xs">No records available.</td></tr>';
+                } else {
+                    tbody.innerHTML = data.recent_messages.map(m => {
+                        const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                        
+                        let intentBadge = '';
+                        if (m.intent === 'faq') intentBadge = '<span class="px-2 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded text-[10px]">FAQ</span>';
+                        else if (m.intent === 'lead_capture') intentBadge = '<span class="px-2 py-0.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded text-[10px]">LEAD</span>';
+                        else intentBadge = '<span class="px-2 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded text-[10px]">HANDOVER</span>';
+                        
+                        let langBadge = `<span class="px-2 py-0.5 bg-white/5 text-white/60 border border-white/10 rounded text-[10px] font-mono">${m.language.toUpperCase()}</span>`;
+                        
+                        return `
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3 px-4 text-white/40 font-mono text-xs">${time}</td>
+                                <td class="py-3 px-4 font-mono text-white/70">${m.phone}</td>
+                                <td class="py-3 px-4 text-white/80 max-w-[200px] truncate" title="${m.message}">${m.message}</td>
+                                <td class="py-3 px-4">${intentBadge}</td>
+                                <td class="py-3 px-4">${langBadge}</td>
+                                <td class="py-3 px-4 text-white/70 font-mono">${m.confidence.toFixed(2)}</td>
+                                <td class="py-3 px-4 text-white/70 max-w-[250px] truncate" title="${m.response}">${m.response}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            } catch (e) {
+                console.error("Error fetching data:", e);
+            }
+        }
+
+        // Send simulated message
+        async function sendSimulatedMessage() {
+            const phoneEl = document.getElementById('sim-phone');
+            const textEl = document.getElementById('sim-text');
+            const phone = phoneEl.value.strip ? phoneEl.value.strip() : phoneEl.value.trim();
+            const message = textEl.value.strip ? textEl.value.strip() : textEl.value.trim();
+            
+            if (!phone || !message) return;
+            
+            // Append User Message to chat window
+            const chatEl = document.getElementById('chat-messages');
+            chatEl.innerHTML += `
+                <div class="flex gap-3 max-w-[85%] ml-auto justify-end">
+                    <div class="bg-brand-600 rounded-2xl px-4 py-2.5 text-sm text-white shadow shadow-brand-500/25">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            chatEl.scrollTop = chatEl.scrollHeight;
+            textEl.value = '';
+
+            try {
+                // Call bot/message endpoint
+                const res = await fetch('/bot/message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sender: phone, message: message })
+                });
+                
+                const data = await res.json();
+                
+                // Append Bot Response
+                chatEl.innerHTML += `
+                    <div class="flex gap-3 max-w-[85%]">
+                        <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-robot text-xs"></i>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-2xl px-4 py-2.5 text-sm text-white/90">
+                            ${data.reply}
+                        </div>
+                    </div>
+                `;
+                chatEl.scrollTop = chatEl.scrollHeight;
+                
+                // Update Simulator State indicator
+                document.getElementById('sim-session').innerText = `State: ${data.session_state}`;
+                
+                // Refresh dashboard data
+                fetchData();
+            } catch (err) {
+                console.error("Simulator API error:", err);
+            }
+        }
+
+        // Claim and Resolve ticket in one go
+        async function claimAndResolve(ticketId) {
+            try {
+                // Claim ticket
+                await fetch(`/handover/claim?handover_id=${ticketId}&agent_name=Admin_Console`, { method: 'POST' });
+                // Resolve ticket
+                await fetch(`/handover/resolve?handover_id=${ticketId}`, { method: 'POST' });
+                
+                // Show notification in simulator if user was the simulated phone
+                const chatEl = document.getElementById('chat-messages');
+                chatEl.innerHTML += `
+                    <div class="flex justify-center my-2">
+                        <span class="text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 py-1 px-3 rounded-full uppercase tracking-wider">
+                            <i class="fa-solid fa-headset mr-1"></i> Escalation Resolved by Admin
+                        </span>
+                    </div>
+                `;
+                chatEl.scrollTop = chatEl.scrollHeight;
+                document.getElementById('sim-session').innerText = "Session: Idle";
+                
+                fetchData();
+            } catch(e) {
+                console.error("Error claim/resolve:", e);
+            }
+        }
+
+        // Setup Event Listeners
+        document.getElementById('btn-send').addEventListener('click', sendSimulatedMessage);
+        document.getElementById('sim-text').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendSimulatedMessage();
+        });
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            fetchData();
+            // Auto refresh metrics & list every 5 seconds
+            setInterval(fetchData, 5000);
+        });
+    </script>
+</body>
+</html>

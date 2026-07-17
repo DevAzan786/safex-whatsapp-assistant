@@ -48,6 +48,8 @@ ENVs/
 # Ignore ChromaDB persisted databases but keep directory
 data/chroma_db/*
 !data/chroma_db/.gitkeep
+data/*.db
+*.db
 
 # ==========================================
 # Testing & Code Quality

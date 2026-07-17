@@ -35,3 +35,63 @@ class HealthResponse(BaseModel):
     faqs_loaded: int
     chroma_ready: bool
     bm25_ready: bool
+
+
+class BotMessageRequest(BaseModel):
+    sender: str = Field(..., description="The user's WhatsApp phone number or identifier")
+    message: str = Field(..., description="The user's incoming message text")
+
+
+class BotMessageResponse(BaseModel):
+    sender: str
+    reply: str
+    intent: str
+    language: str
+    session_state: str
+
+
+class LeadResponse(BaseModel):
+    id: int
+    phone: str
+    name: str
+    email: str
+    requirements: str
+    updated_at: str
+
+
+class HandoverResponse(BaseModel):
+    id: int
+    phone: str
+    status: str
+    reason: str
+    assigned_agent: Optional[str] = None
+    created_at: str
+
+
+class ClaimResponse(BaseModel):
+    status: str
+    message: str
+
+
+class AnalyticsMessageLog(BaseModel):
+    id: int
+    timestamp: str
+    phone: str
+    message: str
+    intent: str
+    language: str
+    is_faq_hit: bool
+    is_lead: bool
+    is_handover: bool
+    confidence: float
+    response: str
+
+
+class AnalyticsMetricsResponse(BaseModel):
+    total_messages: int
+    faq_hits: int
+    leads_collected: int
+    handovers_triggered: int
+    language_distribution: dict
+    intent_distribution: dict
+    recent_messages: List[AnalyticsMessageLog]

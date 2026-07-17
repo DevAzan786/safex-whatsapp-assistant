@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.api.routes import router
 from app.core.pipeline import get_pipeline
+from app.core.db import init_db
 
 app = FastAPI(
     title="SafeX FAQ Knowledge Base",
@@ -20,8 +21,9 @@ def load_pipeline_on_startup():
     """
     Eagerly load the embedding model, cross-encoder, ChromaDB collection,
     and BM25 index once at startup instead of on the first request, so the
-    first real user query isn't slow.
+    first real user query isn't slow. Also initialize the SQLite database tables.
     """
+    init_db()
     get_pipeline()
 
 

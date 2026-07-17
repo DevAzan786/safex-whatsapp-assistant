@@ -1,59 +1,50 @@
-# 🚀 SafeX FAQ Knowledge Base
+# 🚀 SafeX Auto-Reply Bot Suite
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector_DB-FC60A8?style=for-the-badge)](https://www.trychroma.com/)
-[![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
-[![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-1A73E8?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![llm7.io](https://img.shields.io/badge/LLM7.io-Free_LLM-8B5CF6?style=for-the-badge)](https://llm7.io/)
 
-An advanced, production-grade **FAQ Retrieval Engine** built for **SafeX Solutions' WhatsApp Auto-Reply Bot** (Week 2, Group 10). This module utilizes a hybrid retrieval pipeline combining dense vector embeddings with sparse lexical search, merged via Reciprocal Rank Fusion (RRF), re-ranked by a Cross-Encoder, and protected by a confidence gate to ensure zero-hallucination auto-replies.
+An integrated, production-grade **WhatsApp Auto-Reply Bot Suite** built for **SafeX Solutions' customer support and lead generation**. 
+
+This system integrates five key support modules into a single FastAPI backend:
+1.  **🧠 FAQ Retrieval Engine**: Hybrid retrieval (ChromaDB vector search + BM25 keyword matching) with Reciprocal Rank Fusion (RRF), cross-encoder reranking, and a sigmoid-based confidence gate.
+2.  **🌐 Multi-Language Processor**: Automatic detection of English, Urdu (Arabic script), and Roman Urdu (Latin script) using free LLM APIs, translating queries to English before retrieval, and responses back to the original language.
+3.  **🧠 Automated Routing Engine**: Checks session states and classifies intents (`faq`, `lead_capture`, `human_handover`) to orchestrate conversational flows.
+4.  **📋 Lead Collection Flow**: A 5-step interactive state-machine to capture prospective lead information (Name, Email, and Requirements) with regex format validation.
+5.  **📞 Human Handover Logic**: Pauses automatic bot replies and escalates to a live-agent queue if the FAQ confidence score falls below the threshold or upon explicit user request.
+6.  **🗃️ CRM Sync & SQLite Integration**: Persists captured leads to a local database (`data/safex_bot.db`) with automatic de-duplication (appending new project requests under existing contacts).
+7.  **📊 Bot Analytics & Simulator Dashboard**: A beautiful, dark-mode glassmorphic web UI served at `/analytics/dashboard` displaying performance charts, live logs, handover ticket controls, and a fully interactive **WhatsApp Chat Simulator**.
 
 ---
 
-## 🏗️ Pipeline Architecture
-
-This module implements a state-of-the-art retrieval pipeline to handle user messages effectively:
+## 🏗️ Integrated Bot Architecture
 
 ```mermaid
 flowchart TD
-    A[Incoming User Question] --> B{Cache Hit?}
-    B -- Yes (Fast Path) --> C[Return Cached Answer]
-    B -- No --> D[Gemini 2.5 Flash Query Rewrite]
-    D --> E[Parallel Hybrid Search]
+    UserMsg[Incoming WhatsApp Message] --> ActiveState{Is Session Active?}
     
-    subgraph Search Engines
-        E --> F[Dense: ChromaDB + BAAI/bge-small-en-v1.5]
-        E --> G[Sparse: BM25 on Question + Keywords]
-    end
+    ActiveState -- yes: handover_active --> WaitAgent[Notify agent & return wait message]
+    ActiveState -- yes: lead_collection --> ProcessLead[Advance Lead Collection state-machine]
+    ActiveState -- no: idle --> LangDetect[Detect Language: EN, UR, ROMAN_URDU]
     
-    F --> H[Ranked List 1]
-    G --> I[Ranked List 2]
+    LangDetect --> TransEN[Translate to English]
+    TransEN --> IntentClassify{Classify Intent}
     
-    H --> J[Reciprocal Rank Fusion RRF]
-    I --> J
+    IntentClassify -- lead_capture --> InitLead[Initialize Lead Collection state-machine]
+    IntentClassify -- human_handover --> EscHuman[Trigger Human Handover queue]
+    IntentClassify -- faq --> FAQSearch[Run FAQ Retrieval Pipeline]
     
-    J --> K[Top Candidates]
-    K --> L[Cross-Encoder Reranker: ms-marco-MiniLM-L-6-v2]
-    L --> M{Confidence Gate Rerank Score >= Threshold?}
+    FAQSearch --> ConfGate{Confidence Score >= Threshold?}
+    ConfGate -- yes --> TransBack[Translate English response to user language]
+    ConfGate -- no --> EscHuman
     
-    M -- Yes --> N[Return FAQ Answer]
-    M -- No --> O[Return Fallback Message & is_confident=false]
-    
-    N --> P[Write to Redis Cache]
-    O --> P
+    ProcessLead --> CRM[Sync completed lead data to SQLite CRM & clear session]
+    TransBack --> Output[Return reply & log message to SQLite analytics logs]
+    EscHuman --> Output
+    WaitAgent --> Output
 ```
-
----
-
-## 🌟 Key Features
-
-*   **🧠 Gemini-Powered Query Rewriter**: Dynamically reformulates short, slang, or ambiguous user queries (e.g., "what's the price" $\rightarrow$ "What is the pricing model of SafeX Solutions?").
-*   **🔍 Parallel Hybrid Search**: Fuses dense vector embeddings (**BAAI/bge-small-en-v1.5** via ChromaDB) and sparse lexical search (**BM25** on keywords/questions) to capture both semantic meaning and exact keyword matches.
-*   **🔀 Reciprocal Rank Fusion (RRF)**: Merges dense and sparse lists cleanly without needing complex weight tuning.
-*   **📈 Cross-Encoder Reranking**: Re-evaluates top retrieved candidates using **ms-marco-MiniLM-L-6-v2** to calculate accurate final similarity scores.
-*   **🚪 Sigmoid-Based Confidence Gate**: Maps raw reranker scores to a probability scale ($0.0 - 1.0$). If it falls below a configurable threshold (e.g., `0.70`), the engine returns a graceful fallback message so that the bot can trigger **Human Handover** instead of sending an inaccurate answer.
-*   **⚡ Redis caching**: Stores exact and near-exact query responses with customized TTLs to save costs and reduce latency.
-*   **📊 Performance Evaluation**: Features a comprehensive evaluation script calculating core retrieval metrics: **Hit Rate@K**, **MRR**, and **NDCG@K**.
 
 ---
 
@@ -62,36 +53,48 @@ flowchart TD
 ```text
 safex-faq-knowledge-base/
 ├── app/
-│   ├── api/             # FastAPI Route definitions
-│   ├── core/            # Pipeline Logic (retrieval, rewrite, fusion, rerank)
-│   ├── models/          # Request and response schema definitions (Pydantic)
-│   ├── services/        # Third-party integrations (WhatsApp, Redis, etc.)
-│   ├── config.py        # Settings loader with Pydantic / dotenv
-│   └── main.py          # FastAPI application entrypoint
+│   ├── api/             # API Endpoints (FAQ, Bot Message, Handover, Analytics)
+│   ├── core/            # Core Pipeline Logic
+│   │   ├── analytics.py # Analytics logger & aggregator [NEW]
+│   │   ├── cache.py     # Redis exact/near-match cacher
+│   │   ├── confidence.py# Sigmoid confidence calculation
+│   │   ├── crm.py       # SQLite CRM lead sync & de-duplication [NEW]
+│   │   ├── db.py        # SQLite database connection & schema init [NEW]
+│   │   ├── fusion.py    # Reciprocal Rank Fusion (RRF)
+│   │   ├── handover.py  # Handover queue & ticket claiming [NEW]
+│   │   ├── language.py  # Multi-language detection & translation using LLM7 [NEW]
+│   │   ├── lead_collection.py # 5-step Lead collection state machine [NEW]
+│   │   ├── pipeline.py  # Core FAQ retrieval pipeline (Search + RRF + Reranker)
+│   │   ├── query_rewrite.py # Gemini query expansion
+│   │   ├── router.py    # Main bot routing orchestrator [NEW]
+│   │   └── session.py   # State tracking with Redis / Memory fallback [NEW]
+│   ├── models/          # Request, response, and analytics database schemas
+│   ├── services/        # Client Integrations
+│   │   ├── gemini_client.py # Free OpenAI-compatible LLM7 Client wrapper [UPDATED]
+│   │   ├── redis_client.py  # Redis cache client wrapper
+│   │   └── whatsapp_client.py # Meta WhatsApp Cloud API request wrapper [NEW]
+│   ├── templates/
+│   │   └── dashboard.html # Glassmorphic Analytics Dashboard & Simulator [NEW]
+│   ├── config.py        # Configurations loader (dot-env / SQLite paths)
+│   └── main.py          # FastAPI application startup & DB lifecycle hook
 ├── data/
-│   ├── chroma_db/       # Persistent ChromaDB storage directory
-│   └── safex_faq_dataset.json  # Base FAQ Knowledge Base Dataset
-├── docs/                # Architecture and progress reports
-├── scripts/
-│   ├── ingest_data.py   # Populates ChromaDB with dataset embeddings
-│   └── evaluate_retrieval.py  # Runs metrics analysis on pipeline
+│   ├── chroma_db/       # Persistent Vector Database directory
+│   ├── safex_bot.db     # SQLite CRM, handover, and log database [NEW]
+│   └── safex_faq_dataset.json  # Curated FAQ dataset
+├── docs/                # Architecture docs and progress reports
+├── scripts/             # Data ingestion and metric evaluation scripts
 └── tests/               # PyTest unit and integration tests
 ```
 
 ---
 
-## 🚀 Getting Started & Local Setup
+## 🚀 Installation & Local Setup
 
 ### 1. Prerequisites
 Ensure you have **Python 3.9+** and a running instance of **Redis** (optional, caching is bypassed if Redis configuration is omitted).
 
-### 2. Installation
-Clone the repository and set up a virtual environment:
+### 2. Setup environment
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/safex-faq-knowledge-base.git
-cd safex-faq-knowledge-base
-
 # Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -101,94 +104,79 @@ pip install -r requirements.txt
 ```
 
 ### 3. Environment Configuration
-Create a `.env` file in the root directory. You can use the provided `.env.example` as a template:
+Create a `.env` file in the root directory. You can copy the template:
 ```bash
 cp .env.example .env
 ```
-Open `.env` and configure your API keys:
+Configure your credentials in `.env`:
 ```env
-GEMINI_API_KEY="your-google-gemini-api-key"
+# LLM Client (llm7.io is free, you can use any API token or keep the default)
+GEMINI_API_KEY="sk-llm7-free-access-token"
 CONFIDENCE_THRESHOLD=0.70
-REDIS_URL="redis://localhost:6379"  # Leave empty if you don't want Redis caching locally
+SQLITE_DB_PATH="data/safex_bot.db"
+
+# WhatsApp Integration Webhook Credentials (optional, for live testing)
+WHATSAPP_CLOUD_API_TOKEN="your-meta-whatsapp-token"
+WHATSAPP_PHONE_NUMBER_ID="your-phone-id"
+WHATSAPP_VERIFY_TOKEN="safex_verify_token_123"
 ```
 
-### 4. Data Ingestion
-Populate the local ChromaDB database with the embedded FAQ dataset:
+### 4. Ingest FAQ Data
+Populate the ChromaDB database with the embedded FAQ dataset:
 ```bash
 python scripts/ingest_data.py
 ```
 
 ### 5. Running the Application
-Start the FastAPI server locally:
+Start the FastAPI local development server:
 ```bash
 uvicorn app.main:app --reload
 ```
-Once started, the interactive API documentation will be available at:
-*   Swagger UI: **[http://localhost:8000/docs](http://localhost:8000/docs)**
-*   ReDoc: **[http://localhost:8000/redoc](http://localhost:8000/redoc)**
+Open your browser and navigate to:
+*   **Analytics Panel & WhatsApp Chat Simulator**: **[http://localhost:8000/analytics/dashboard](http://localhost:8000/analytics/dashboard)**
+*   Interactive API Docs: **[http://localhost:8000/docs](http://localhost:8000/docs)**
 
 ---
 
 ## 🔌 API Reference
 
-### Post Query Endpoint
-*   **Path**: `/faq/query`
+### 1. Bot Unified Message Endpoint
+*   **Path**: `/bot/message`
 *   **Method**: `POST`
 *   **Request Body**:
     ```json
     {
-      "question": "Where is your office located?",
-      "language": "en",
-      "user_id": "+923001234567"
+      "sender": "+923001234567",
+      "message": "website banani hai"
     }
     ```
-
 *   **Response Body**:
     ```json
     {
-      "answer": "Our office is at E-9, Islamabad, Pakistan. We're headquartered in Islamabad but serve clients in more than 15 countries worldwide.",
-      "confidence": 0.98,
-      "matched_faq_id": "CON004",
-      "category": "contact",
-      "is_confident": true,
-      "cached": false,
-      "candidates": [
-        {
-          "faq_id": "CON004",
-          "question": "Where is SafeX Solutions located?",
-          "answer": "Our office is at E-9, Islamabad, Pakistan...",
-          "category": "contact",
-          "score": 0.98
-        }
-      ]
+      "sender": "+923001234567",
+      "reply": "Hamara office Web development cover karta hai...",
+      "intent": "faq",
+      "language": "roman_urdu",
+      "session_state": "idle"
     }
     ```
 
-### Health Check Endpoint
-*   **Path**: `/faq/health`
-*   **Method**: `GET`
-*   **Response**:
-    ```json
-    {
-      "status": "ok",
-      "faqs_loaded": 45,
-      "chroma_ready": true,
-      "bm25_ready": true
-    }
-    ```
+### 2. Handover Claims API
+*   **GET `/handover/pending`**: List all users waiting for human assistance.
+*   **POST `/handover/claim?handover_id=X&agent_name=AgentZain`**: Assign a pending escalation to an agent.
+*   **POST `/handover/resolve?handover_id=X`**: Resolve a ticket and clear the session, letting the bot auto-respond again.
+
+### 3. WhatsApp Cloud API Webhooks
+*   **GET `/bot/whatsapp/webhook`**: Verifies Meta webhook subscription verification handshake.
+*   **POST `/bot/whatsapp/webhook`**: Receives, parses, processes, and responds to real-time WhatsApp Cloud API user messages.
 
 ---
 
 ## 📊 Verification & Testing
 
-### Running Tests
-Execute the unit and integration test suite to verify the application functionality:
+### Automated Test Suite
+Execute the integration and unit tests covering multilingual flows, lead captures, and handovers:
 ```bash
 pytest
 ```
-
-### Running Retrieval Evaluation
-Assess the accuracy of the retrieval pipeline against the curated test dataset:
-```bash
-python scripts/evaluate_retrieval.py
-```
+*(All mock models bypass external API dependencies to ensure clean, fast, offline execution).*

@@ -44,6 +44,9 @@ class Settings:
     # Dataset path
     faq_dataset_path: str = os.getenv("FAQ_DATASET_PATH", "data/safex_faq_dataset.json")
 
+    # Database
+    sqlite_db_path: str = os.getenv("SQLITE_DB_PATH", "data/safex_bot.db")
+
     # WhatsApp (used only for local end-to-end testing of this module)
     whatsapp_cloud_api_token: str = os.getenv("WHATSAPP_CLOUD_API_TOKEN", "")
     whatsapp_phone_number_id: str = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
