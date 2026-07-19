@@ -9,7 +9,7 @@ load_dotenv()
 class Settings:
     # LLM
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
-    gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    gemini_model: str = os.getenv("GEMINI_MODEL", "mistral-small-latest")
 
     # ChromaDB
     chroma_persist_dir: str = os.getenv("CHROMA_PERSIST_DIR", "./data/chroma_db")
@@ -47,10 +47,10 @@ class Settings:
     # Database
     sqlite_db_path: str = os.getenv("SQLITE_DB_PATH", "data/safex_bot.db")
 
-    # WhatsApp (used only for local end-to-end testing of this module)
-    whatsapp_cloud_api_token: str = os.getenv("WHATSAPP_CLOUD_API_TOKEN", "")
-    whatsapp_phone_number_id: str = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
-    whatsapp_verify_token: str = os.getenv("WHATSAPP_VERIFY_TOKEN", "")
+    # OpenWA
+    openwa_api_url: str = os.getenv("OPENWA_API_URL", "http://localhost:2785")
+    openwa_api_key: str = os.getenv("OPENWA_API_KEY", "")
+    openwa_session_id: str = os.getenv("OPENWA_SESSION_ID", "default")
 
 
 settings = Settings()

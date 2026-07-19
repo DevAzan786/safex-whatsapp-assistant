@@ -1,9 +1,10 @@
 from typing import List
 import os
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, BackgroundTasks
 from fastapi.responses import HTMLResponse
 from app.config import settings
 from app.services.whatsapp_client import send_whatsapp_message
+from app.core.crm import get_all_leads
 
 from app.models.schemas import (
     FAQQueryRequest, 
@@ -13,7 +14,8 @@ from app.models.schemas import (
     BotMessageResponse,
     HandoverResponse,
     ClaimResponse,
-    AnalyticsMetricsResponse
+    AnalyticsMetricsResponse,
+    LeadResponse
 )
 from app.core.pipeline import get_pipeline
 from app.core.router import handle_user_message
@@ -81,6 +83,12 @@ def analytics_data():
     return AnalyticsMetricsResponse(**get_analytics_metrics())
 
 
+@router.get("/leads/all", response_model=List[LeadResponse])
+def list_all_leads():
+    """Returns all captured leads with full details for the dashboard."""
+    return [LeadResponse(**lead) for lead in get_all_leads()]
+
+
 @router.get("/analytics/dashboard", response_class=HTMLResponse)
 def get_dashboard():
     template_path = os.path.join("app", "templates", "dashboard.html")
@@ -91,49 +99,73 @@ def get_dashboard():
     return HTMLResponse(content=html_content)
 
 
-# --- Official WhatsApp Business Webhook Endpoints ---
+processed_message_ids = set()
+
+# --- OpenWA WhatsApp Webhook Endpoints ---
 
 @router.get("/bot/whatsapp/webhook")
-def verify_whatsapp_webhook(
-    hub_mode: str = Query(None, alias="hub.mode"),
-    hub_challenge: str = Query(None, alias="hub.challenge"),
-    hub_verify_token: str = Query(None, alias="hub.verify_token")
-):
+def verify_whatsapp_webhook():
     """
-    Endpoint for Meta to verify our webhook URL during subscription setup.
+    Simple check endpoint to verify that the webhook path is running and accessible.
     """
-    if hub_mode == "subscribe" and hub_verify_token == settings.whatsapp_verify_token:
-        # Challenge must be returned as plain text response
-        return HTMLResponse(content=hub_challenge, status_code=200)
-    raise HTTPException(status_code=403, detail="Verification token mismatch")
+    return HTMLResponse(content="OpenWA Webhook Endpoint Ready", status_code=200)
+
+
+def process_and_reply_task(sender: str, message_text: str, from_val: str, session_id: str):
+    """
+    Helper background worker to execute slow LLM calls and send WhatsApp responses.
+    """
+    try:
+        # Orchestrate through router engine
+        result = handle_user_message(sender, message_text)
+        # Send the response back to user's WhatsApp number using the raw chat ID
+        send_whatsapp_message(from_val, result["reply"], session_id=session_id)
+    except Exception as e:
+        print(f"Error in background message processing: {e}")
 
 
 @router.post("/bot/whatsapp/webhook")
-async def receive_whatsapp_message(request: Request):
+async def receive_whatsapp_message(request: Request, background_tasks: BackgroundTasks):
     """
-    Endpoint where Meta WhatsApp Cloud API pushes real-time user message events.
+    Endpoint where OpenWA API pushes real-time user message events as JSON.
     """
     try:
+        import json
         payload = await request.json()
-        # Extract WhatsApp message details (sender ID & text body)
-        entry = payload.get("entry", [])[0]
-        change = entry.get("changes", [])[0]
-        value = change.get("value", {})
-        message_obj = value.get("messages", [])[0]
+        print(f"[Webhook Received] Event: {payload.get('event')}, Payload: {json.dumps(payload, ensure_ascii=True)}")
         
-        sender = message_obj.get("from")  # e.g., "923001234567"
-        message_text = message_obj.get("text", {}).get("body", "")
-        
-        if sender and message_text:
-            # Format sender to have a plus sign if it's missing (WhatsApp payload standard is plain digits)
-            formatted_sender = sender if sender.startswith("+") else f"+{sender}"
-            # Orchestrate through router engine
-            result = handle_user_message(formatted_sender, message_text)
-            # Send the response back to user's WhatsApp number
-            send_whatsapp_message(sender, result["reply"])
+        # We only process message.received events
+        if payload.get("event") != "message.received":
+            return {"status": "ignored"}
             
-    except Exception:
-        # Silently pass events that aren't user text messages (reads, deliveries, statuses)
-        pass
+        data = payload.get("data", {})
+        message_id = data.get("id")
+        
+        # Deduplicate to prevent processing webhook retries
+        if message_id:
+            if message_id in processed_message_ids:
+                print(f"[Webhook] Duplicate message ignored: {message_id}")
+                return {"status": "duplicate"}
+            processed_message_ids.add(message_id)
+            # Control set size to prevent memory leaks
+            if len(processed_message_ids) > 1000:
+                processed_message_ids.pop()
+                
+        session_id = payload.get("sessionId")
+        from_val = data.get("from", "")  # e.g., "923001234567@c.us"
+        message_text = data.get("body", "")
+        
+        if from_val and message_text:
+            # Extract number before the @c.us domain
+            sender_phone = from_val.split("@")[0].strip()
+            
+            # Ensure sender is correctly formatted with + prefix
+            sender = sender_phone if sender_phone.startswith("+") else f"+{sender_phone}"
+            
+            # Execute the heavy work asynchronously
+            background_tasks.add_task(process_and_reply_task, sender, message_text, from_val, session_id)
+            
+    except Exception as e:
+        print(f"Error handling OpenWA webhook: {e}")
         
     return {"status": "success"}

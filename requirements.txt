@@ -19,6 +19,7 @@ requests
 # Utilities
 python-dotenv
 pydantic
+python-multipart
 
 # Testing
 pytest

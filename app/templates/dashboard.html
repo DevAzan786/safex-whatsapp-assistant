@@ -213,7 +213,7 @@
         </div>
 
         <!-- Logs & Database Row -->
-        <div class="glass rounded-2xl p-6">
+        <div class="glass rounded-2xl p-6 mb-8">
             <div class="flex justify-between items-center mb-4">
                 <h4 class="font-outfit font-bold text-lg text-white"><i class="fa-solid fa-list-check text-brand-500 mr-2"></i>Live System logs</h4>
                 <button onclick="fetchData()" class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5 text-white/60 hover:text-white transition-all">
@@ -235,6 +235,30 @@
                     </thead>
                     <tbody class="text-sm divide-y divide-white/5" id="logs-tbody">
                         <!-- Dynamic Logs -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CRM Captured Leads Row -->
+        <div class="glass rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="font-outfit font-bold text-lg text-white"><i class="fa-solid fa-address-book text-brand-500 mr-2"></i>CRM Captured Leads</h4>
+                <span class="text-xs bg-white/5 py-1.5 px-3 rounded-lg border border-white/5 text-white/60 font-mono" id="leads-count">0 Leads</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-white/5 text-white/40 text-xs font-semibold uppercase">
+                            <th class="py-3 px-4">Name</th>
+                            <th class="py-3 px-4">Phone</th>
+                            <th class="py-3 px-4">Email</th>
+                            <th class="py-3 px-4">Requirements</th>
+                            <th class="py-3 px-4">Last Synced</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-white/5" id="leads-tbody">
+                        <!-- Dynamic Leads -->
                     </tbody>
                 </table>
             </div>
@@ -396,6 +420,34 @@
                                 <td class="py-3 px-4">${langBadge}</td>
                                 <td class="py-3 px-4 text-white/70 font-mono">${m.confidence.toFixed(2)}</td>
                                 <td class="py-3 px-4 text-white/70 max-w-[250px] truncate" title="${m.response}">${m.response}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+                
+                // Update Leads List
+                const leadsRes = await fetch('/leads/all');
+                const leads = await leadsRes.json();
+                document.getElementById('leads-count').innerText = `${leads.length} Lead${leads.length === 1 ? '' : 's'}`;
+                
+                const leadsTbody = document.getElementById('leads-tbody');
+                if (leads.length === 0) {
+                    leadsTbody.innerHTML = '<tr><td colspan="5" class="text-center py-6 text-white/30 text-xs">No leads captured yet.</td></tr>';
+                } else {
+                    leadsTbody.innerHTML = leads.map(l => {
+                        const time = new Date(l.updated_at).toLocaleString([], {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        return `
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3 px-4 font-semibold text-white/90">${l.name}</td>
+                                <td class="py-3 px-4 font-mono text-white/70">${l.phone}</td>
+                                <td class="py-3 px-4 text-brand-100">${l.email}</td>
+                                <td class="py-3 px-4 text-white/80 max-w-[300px] truncate" title="${l.requirements}">${l.requirements}</td>
+                                <td class="py-3 px-4 text-white/40 font-mono text-xs">${time}</td>
                             </tr>
                         `;
                     }).join('');

@@ -15,7 +15,7 @@ This system integrates five key support modules into a single FastAPI backend:
 4.  **📋 Lead Collection Flow**: A 5-step interactive state-machine to capture prospective lead information (Name, Email, and Requirements) with regex format validation.
 5.  **📞 Human Handover Logic**: Pauses automatic bot replies and escalates to a live-agent queue if the FAQ confidence score falls below the threshold or upon explicit user request.
 6.  **🗃️ CRM Sync & SQLite Integration**: Persists captured leads to a local database (`data/safex_bot.db`) with automatic de-duplication (appending new project requests under existing contacts).
-7.  **📊 Bot Analytics & Simulator Dashboard**: A beautiful, dark-mode glassmorphic web UI served at `/analytics/dashboard` displaying performance charts, live logs, handover ticket controls, and a fully interactive **WhatsApp Chat Simulator**.
+7.  **📊 Bot Analytics & Simulator Dashboard**: A beautiful, dark-mode glassmorphic web UI served at `/analytics/dashboard` displaying performance charts, live logs, handover ticket controls, a **CRM Captured Leads** database table grid, and a fully interactive **WhatsApp Chat Simulator**.
 
 ---
 
@@ -115,10 +115,10 @@ GEMINI_API_KEY="sk-llm7-free-access-token"
 CONFIDENCE_THRESHOLD=0.70
 SQLITE_DB_PATH="data/safex_bot.db"
 
-# WhatsApp Integration Webhook Credentials (optional, for live testing)
-WHATSAPP_CLOUD_API_TOKEN="your-meta-whatsapp-token"
-WHATSAPP_PHONE_NUMBER_ID="your-phone-id"
-WHATSAPP_VERIFY_TOKEN="safex_verify_token_123"
+# OpenWA WhatsApp Integration (Optional)
+OPENWA_API_URL=http://localhost:2785
+OPENWA_API_KEY=your-openwa-api-key
+OPENWA_SESSION_ID=fb9e001a-6ce0-4182-afb3-a924791523d0
 ```
 
 ### 4. Ingest FAQ Data
@@ -166,9 +166,12 @@ Open your browser and navigate to:
 *   **POST `/handover/claim?handover_id=X&agent_name=AgentZain`**: Assign a pending escalation to an agent.
 *   **POST `/handover/resolve?handover_id=X`**: Resolve a ticket and clear the session, letting the bot auto-respond again.
 
-### 3. WhatsApp Cloud API Webhooks
-*   **GET `/bot/whatsapp/webhook`**: Verifies Meta webhook subscription verification handshake.
-*   **POST `/bot/whatsapp/webhook`**: Receives, parses, processes, and responds to real-time WhatsApp Cloud API user messages.
+### 3. CRM Leads API
+*   **GET `/leads/all`**: Get all captured leads with full details (Name, Phone, Email, Requirements, and timestamp).
+
+### 4. OpenWA WhatsApp Webhooks
+*   **GET `/bot/whatsapp/webhook`**: Simple health check to verify endpoint accessibility.
+*   **POST `/bot/whatsapp/webhook`**: Receives, parses, and processes real-time WhatsApp message events pushed from the **OpenWA open-source WhatsApp API client** to reply to messages asynchronously.
 
 ---
 
@@ -180,3 +183,9 @@ Execute the integration and unit tests covering multilingual flows, lead capture
 pytest
 ```
 *(All mock models bypass external API dependencies to ensure clean, fast, offline execution).*
+
+### Database Maintenance & Reset
+To wipe the analytics logs, active escalations, and captured leads from the SQLite database to start fresh or prepare for recording demos:
+```bash
+python scripts/clear_data.py
+```

@@ -199,3 +199,33 @@ def test_multilingual_faq_routing(mock_router_gen, mock_lang_gen):
     body = response.json()
     assert body["language"] == "roman_urdu"
     assert "office" in body["reply"].lower() or "islamabad" in body["reply"].lower()
+
+
+@patch("app.core.language.generate_text", side_effect=mock_generate_text)
+@patch("app.core.router.generate_text", side_effect=mock_generate_text)
+@patch("app.api.routes.send_whatsapp_message")
+def test_openwa_webhook_flow(mock_send_whatsapp, mock_router_gen, mock_lang_gen):
+    sender_phone = "+923001234567"
+    clear_session(sender_phone)
+    
+    # Send a JSON POST request simulating an OpenWA webhook event
+    response = client.post(
+        "/bot/whatsapp/webhook",
+        json={
+            "event": "message.received",
+            "data": {
+                "from": f"{sender_phone}@c.us",
+                "body": "office kahan hai?"
+            }
+        }
+    )
+    
+    assert response.status_code == 200
+    assert response.json() == {"status": "success"}
+    
+    # Verify that send_whatsapp_message was called to send the reply back to the user
+    mock_send_whatsapp.assert_called_once()
+    called_args = mock_send_whatsapp.call_args[0]
+    assert called_args[0] == f"{sender_phone}@c.us"
+    assert "office" in called_args[1].lower() or "islamabad" in called_args[1].lower()
+

@@ -37,3 +37,11 @@ def test_query_matches_correct_faq_for_clear_question():
     body = response.json()
     assert body["is_confident"] is True
     assert body["matched_faq_id"] == "CON005"
+
+
+def test_list_all_leads():
+    response = client.get("/leads/all")
+    assert response.status_code == 200
+    body = response.json()
+    assert isinstance(body, list)
+
