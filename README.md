@@ -4,13 +4,13 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector_DB-FC60A8?style=for-the-badge)](https://www.trychroma.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![llm7.io](https://img.shields.io/badge/LLM7.io-Free_LLM-8B5CF6?style=for-the-badge)](https://llm7.io/)
+[![Mistral AI](https://img.shields.io/badge/Mistral_AI-API-FD5E53?style=for-the-badge)](https://mistral.ai/)
 
 An integrated, production-grade **WhatsApp Auto-Reply Bot Suite** built for **SafeX Solutions' customer support and lead generation**. 
 
 This system integrates five key support modules into a single FastAPI backend:
 1.  **🧠 FAQ Retrieval Engine**: Hybrid retrieval (ChromaDB vector search + BM25 keyword matching) with Reciprocal Rank Fusion (RRF), cross-encoder reranking, and a sigmoid-based confidence gate.
-2.  **🌐 Multi-Language Processor**: Automatic detection of English, Urdu (Arabic script), and Roman Urdu (Latin script) using free LLM APIs, translating queries to English before retrieval, and responses back to the original language.
+2.  **🌐 Multi-Language Processor**: Automatic detection of English, Urdu (Arabic script), and Roman Urdu (Latin script) using Mistral AI APIs, translating queries to English before retrieval, and responses back to the original language.
 3.  **🧠 Automated Routing Engine**: Checks session states and classifies intents (`faq`, `lead_capture`, `human_handover`) to orchestrate conversational flows.
 4.  **📋 Lead Collection Flow**: A 5-step interactive state-machine to capture prospective lead information (Name, Email, and Requirements) with regex format validation.
 5.  **📞 Human Handover Logic**: Pauses automatic bot replies and escalates to a live-agent queue if the FAQ confidence score falls below the threshold or upon explicit user request.
@@ -62,7 +62,7 @@ safex-faq-knowledge-base/
 │   │   ├── db.py        # SQLite database connection & schema init [NEW]
 │   │   ├── fusion.py    # Reciprocal Rank Fusion (RRF)
 │   │   ├── handover.py  # Handover queue & ticket claiming [NEW]
-│   │   ├── language.py  # Multi-language detection & translation using LLM7 [NEW]
+│   │   ├── language.py  # Multi-language detection & translation using Mistral AI [NEW]
 │   │   ├── lead_collection.py # 5-step Lead collection state machine [NEW]
 │   │   ├── pipeline.py  # Core FAQ retrieval pipeline (Search + RRF + Reranker)
 │   │   ├── query_rewrite.py # Gemini query expansion
@@ -70,7 +70,7 @@ safex-faq-knowledge-base/
 │   │   └── session.py   # State tracking with Redis / Memory fallback [NEW]
 │   ├── models/          # Request, response, and analytics database schemas
 │   ├── services/        # Client Integrations
-│   │   ├── gemini_client.py # Free OpenAI-compatible LLM7 Client wrapper [UPDATED]
+│   │   ├── gemini_client.py # Mistral AI Client wrapper [UPDATED]
 │   │   ├── redis_client.py  # Redis cache client wrapper
 │   │   └── whatsapp_client.py # Meta WhatsApp Cloud API request wrapper [NEW]
 │   ├── templates/
@@ -110,8 +110,8 @@ cp .env.example .env
 ```
 Configure your credentials in `.env`:
 ```env
-# LLM Client (llm7.io is free, you can use any API token or keep the default)
-GEMINI_API_KEY="sk-llm7-free-access-token"
+# Mistral AI API Key (Set your Mistral API key here)
+GEMINI_API_KEY="your-mistral-api-key-here"
 CONFIDENCE_THRESHOLD=0.70
 SQLITE_DB_PATH="data/safex_bot.db"
 
